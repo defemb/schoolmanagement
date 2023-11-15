@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Student's Profile
+{% endblock %}
+
+{% block main %}
+<div class="narrow-form">
+    <form action="/admin/students_edit/{{ student.student_id }}" method="post">
+        <div class="mb-3">
+            <label for="student_id" class="form-label">ID</label>
+            <input class="form-control" id="id" name="student_id" type="text" required value="{{ student.student_id }}">
+        </div>
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input class="form-control" id="name" name="name" type="text" required value="{{ student.name }}">
+        </div>
+        <div class="mb-3">
+            <label for="phone" class="form-label">Phone Number</label>
+            <input class="form-control" id="phone" name="phone" placeholder="Student's Phone Number" type="text" value="{{ student.phone or placeholder }}">
+        </div>
+        <div class="mb-3">
+            <label for="adult_phone" class="form-label">Adult's Phone Number</label>
+            <input class="form-control" id="adult_phone" name="adult_phone" placeholder="Adult's Phone Number" type="text" value="{{ student.adult_phone or placeholder }}">
+        </div>
+        <div class="mb-3">
+        <button class="btn btn-dark" type="submit">Update Student's Profile</button>
+        </div>
+    </form>
+    <div class="mb-3">
+        <form action="/admin/delete/{{ student.student_id }}" method="post" onsubmit="return confirm('Are you sure you want to delete this student?');">
+            <input type="hidden" name="item_id" value="{{ student.student_id }}">
+            <button type="submit" class="btn btn-danger">Delete Student</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

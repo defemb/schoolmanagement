@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Add Student
+{% endblock %}
+
+{% block main %}
+<div class="section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="narrow-form">
+                    <form action="/admin/students_add" method="post" class="mt-0">
+                        <div class="mb-3">
+                            <label for="student_id" class="form-label">Student ID</label>
+                            <input type="text" class="form-control" id="student_id" name="student_id" placeholder="Enter Student ID" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmation_id" class="form-label">Confirm Student ID</label>
+                            <input type="text" class="form-control" id="confirmation_id" name="confirmation_id" placeholder="Confirm Student ID" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="Enter Student's Name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input type="text" class="form-control" id="phone" name="phone" placeholder="Enter Student's Phone Number">
+                        </div>
+                        <div class="mb-3">
+                            <label for="adult_phone" class="form-label">Adult's Phone Number</label>
+                            <input type="text" class="form-control" id="adult_phone" name="adult_phone" placeholder="Enter Adult's Phone Number">
+                        </div>
+                        <div class="mb-3 text-center">
+                            <button type="submit" class="btn btn-dark">Add New Student</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

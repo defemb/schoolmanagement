@@ -1,0 +1,107 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Student Enrollments
+{% endblock %}
+
+{% block main %}
+<div class="enrollments-list">
+    <h3>Enrollments for {{ student.name }}</h3>
+    <table class="table table-dark table-bordered table-striped mt-4">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Monday</th>
+                <th>Tuesday</th>
+                <th>Wednesday</th>
+                <th>Thursday</th>
+                <th>Friday</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>8:30 - 10:00</td>
+                {% for day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"] %}
+                    <td>
+                        {% for enrollment in student_enrollments if enrollment.start_time == "08:30" %}
+                            {% if day in enrollment.dayofweek %}
+                                <div>
+                                    <strong>Course:</strong> {{ enrollment.course_name }} {{ enrollment.course_level }}
+                                    <br>
+                                    <strong>Teacher:</strong> {{ enrollment.teacher_name }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <td>10:00 - 11:30</td>
+                {% for day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"] %}
+                    <td>
+                        {% for enrollment in student_enrollments if enrollment.start_time == "10:00" %}
+                            {% if day in enrollment.dayofweek %}
+                                <div>
+                                    <strong>Course:</strong> {{ enrollment.course_name }} {{ enrollment.course_level }}
+                                    <br>
+                                    <strong>Teacher:</strong> {{ enrollment.teacher_name }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                {% endfor %}
+            </tr>
+            <tr>
+                <td>11:30 - 1:00</td>
+                {% for day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"] %}
+                    <td>
+                        {% for enrollment in student_enrollments if enrollment.start_time == "11:30" %}
+                            {% if day in enrollment.dayofweek %}
+                                <div>
+                                    <strong>Course:</strong> {{ enrollment.course_name }} {{ enrollment.course_level }}
+                                    <br>
+                                    <strong>Teacher:</strong> {{ enrollment.teacher_name }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                {% endfor %}
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="row justify-content-around mt-4">
+    <div class="col-md-4">
+        <form action="/admin/enroll" method="post">
+            <div class="input-group">
+                <input type="hidden" name="student" value="{{ student.student_id }}">
+                    <select class="form-select" id="course" name="course" required>
+                        <option selected disabled>Select a course to enroll</option>
+                        {% for course in courses %}
+                            <option value="{{ course.course_id }}">{{ course.name }} {{ course.level }} - {{ course.teacher_name }}</option>
+                        {% endfor %}
+                    </select>
+                <button class="btn btn-dark" type="submit">Enroll Student</button>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4">
+        <form action="/admin/drop" method="post" onsubmit="return confirm('Are you sure the student wants to drop this course?');">
+            <div class="input-group">
+                <input type="hidden" name="student" value="{{ student.student_id }}">
+                <select class="form-select" id="drop_course" name="drop_course" required>
+                    <option selected disabled>Select a course to drop</option>
+                    {% set added_courses = [] %}
+                    {% for enrollment in student_enrollments %}
+                        {% if enrollment.course_name not in added_courses %}
+                            <option value="{{ enrollment.course_id }}">{{ enrollment.course_name }} {{ enrollment.course_level }} - {{ enrollment.teacher_name }}</option>
+                            {% set _ = added_courses.append(enrollment.course_name) %}
+                        {% endif %}
+                    {% endfor %}
+                </select>
+                <button class="btn btn-danger" type="submit">Drop Course</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

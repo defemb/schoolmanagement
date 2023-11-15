@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Teacher Functions
+{% endblock %}
+
+{% block main %}
+<h2>Teacher Functions</h2>
+<div class="container mt-3">
+    <div class="card text-center mb-3">
+        <div class="card-body">
+            <h5 class="card-title">Manage Courses</h5>
+            <p class="card-text">Register attendance and manage grades for your courses.</p>
+            <a href="/teacher/courses" class="btn btn-dark">Courses</a>
+        </div>
+    </div>
+    <div class="card text-center mb-3">
+        <div class="card-body">
+            <h5 class="card-title">View Students</h5>
+            <p class="card-text">View details of students enrolled in your courses.</p>
+            <a href="/teacher/students" class="btn btn-dark">Students</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

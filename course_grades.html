@@ -1,0 +1,85 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Course Grades
+{% endblock %}
+
+{% block main %}
+<div class="enrollments-list">
+    <h3>Grades for {{ course[0].name }} {{ course[0].level }} - Teacher: {{ course[0].teacher_name }}</h3>
+    <h5>{% set added_schedules = [] %}
+        {% for schedule in course %}
+            {% if schedule.course_day not in added_schedules %}
+                {{ schedule.course_day[:2] }} {{ schedule.course_start }} - {{ schedule.course_end }}
+                {% set _ = added_schedules.append(schedule.course_day) %}
+            {% endif %}
+        {% endfor %}</h5>
+
+    <form action="/teacher/grades/{{ course[0].course_id }}" method="post">
+        <table class="table table-dark table-striped mt-4">
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in enrollments %}
+                    <tr>
+                        <td>{{ student.name }}</td>
+                        <td>
+                            <div class="row justify-content-center">
+                                <div class="col-md-3">
+                                    {% if grades %}
+                                        {% for grade in grades %}
+                                            {% if grade.student_id == student.student_id %}
+                                            <select class="form-select form-select-sm" name="grade_{{ student.student_id }}">
+                                                <option disabled>Select Grade</option>
+                                                <option value="A" {% if grade.grade == "A" %} selected {% endif %}>A</option>
+                                                <option value="B" {% if grade.grade == "B" %} selected {% endif %}>B</option>
+                                                <option value="C" {% if grade.grade == "C" %} selected {% endif %}>C</option>
+                                                <option value="D" {% if grade.grade == "D" %} selected {% endif %}>D</option>
+                                                <option value="F" {% if grade.grade == "F" %} selected {% endif %}>F</option>
+                                            </select>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% elif not grades %}
+                                        <select class="form-select form-select-sm" name="grade_{{ student.student_id }}">
+                                            <option disabled selected>Select Grade</option>
+                                            <option value="A">A</option>
+                                            <option value="B">B</option>
+                                            <option value="C">C</option>
+                                            <option value="D">D</option>
+                                            <option value="F">F</option>
+                                        </select>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="submit" class="btn btn-light btn-sm" value="Update Grades">
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </form>
+
+    <div class="row justify-content-around">
+        <div class="col-md-3">
+            <a href="/teacher/courses" class="btn btn-dark mt-2">Courses Dashboard</a>
+        </div>
+        <div class="col-md-3">
+            <a href="/course/enrollments/{{ course[0].course_id }}" class="btn btn-dark mt-2">Course Enrollments</a>
+        </div>
+        <div class="col-md-3">
+            <a href="/course/attendance/{{ course[0].course_id }}" class="btn btn-dark mt-2">Course Attendance</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
