@@ -1,0 +1,98 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Teachers
+{% endblock %}
+
+{% block main %}
+<script>
+    let sortColumn = 0;
+    let ascending = true;
+
+    function sortTeachers(column) {
+        if (sortColumn === column) {
+            ascending = !ascending;
+        } else {
+            ascending = true;
+            sortColumn = column;
+        }
+
+        const table = document.querySelector('table');
+        const rows = Array.from(table.querySelectorAll('tbody tr'));
+
+        rows.sort((a, b) => {
+            const aValue = a.querySelector(`td:nth-child(${column})`).textContent;
+            const bValue = b.querySelector(`td:nth-child(${column})`).textContent;
+            return ascending ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+        });
+
+        table.querySelector('tbody').innerHTML = '';
+        rows.forEach(row => {
+            table.querySelector('tbody').appendChild(row);
+        });
+
+        // Update arrow buttons
+        resetArrowButtons();
+    }
+
+    function resetArrowButtons() {
+        const arrowButtons = document.querySelectorAll('.btn-sort');
+        arrowButtons.forEach(button => {
+            button.textContent = '↓';
+        });
+
+        if (ascending) {
+            const currentButton = document.querySelector(`th[onclick="sortTeachers(${sortColumn})"] .btn-sort`);
+            currentButton.textContent = '↑';
+        }
+    }
+</script>
+
+<form action="/admin/teachers" method="post">
+    <div class="row justify-content-around">
+        <div class="col-md-2">
+            <select class="form-select" id="detail" name="detail">
+                <option disabled selected>Select Detail</option>
+                <option value="user_id">ID</option>
+                <option value="name">Name</option>
+                <option value="mail">Email</option>
+                <option value="phone">Phone</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <div class="input-group">
+                <input type="text" class="form-control" id="query" name="query" placeholder="Search by selected detail">
+                <button type="submit" class="btn btn-dark" id="search-button">Search</button>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <a href="/admin/teachers_add" class="btn btn-dark mt-0">Add New Teacher</a>
+        </div>
+    </div>
+</form>
+
+<table class="table table-dark table-striped mt-4">
+    <thead>
+        <tr>
+            <th scope="col" onclick="sortTeachers(1)">ID <button class="btn btn-dark btn-sm btn-sort">↓</button></th>
+            <th scope="col" onclick="sortTeachers(2)">Name <button class="btn btn-dark btn-sm btn-sort">↓</button></th>
+            <th scope="col" onclick="sortTeachers(3)">Email Address <button class="btn btn-dark btn-sm btn-sort">↓</button></th>
+            <th scope="col" onclick="sortTeachers(4)">Phone Number <button class="btn btn-dark btn-sm btn-sort">↓</button></th>
+            <th scope="col" style="padding-bottom: 13px;">Change details</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for teacher in teachers %}
+            <tr>
+                <td>{{ teacher.user_id }}</td>
+                <td>{{ teacher.name }}</td>
+                <td>{{ teacher.mail }}</td>
+                <td>{{ teacher.phone }}</td>
+                <td>
+                    <a href="/admin/teachers_edit/{{ teacher.user_id }}" class="btn btn-light btn-sm">Edit</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

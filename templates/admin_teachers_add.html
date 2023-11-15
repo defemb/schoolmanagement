@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Add Teacher
+{% endblock %}
+
+{% block main %}
+<div class="section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="narrow-form">
+                    <form action="/admin/teachers_add" method="post" class="mt-0">
+                        <div class="mb-3">
+                            <label for="teacher_id" class="form-label">Teacher ID</label>
+                            <input type="text" class="form-control" id="teacher_id" name="teacher_id" placeholder="Enter Teacher ID" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmation_id" class="form-label">Confirm Teacher ID</label>
+                            <input type="text" class="form-control" id="confirmation_id" name="confirmation_id" placeholder="Confirm Teacher ID" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="teacher_name" class="form-label">Teacher Name</label>
+                            <input type="text" class="form-control" id="teacher_name" name="teacher_name" placeholder="Enter Teacher's Name" required>
+                        </div>
+                        <div class="mb-3 text-center">
+                            <button type="submit" class="btn btn-dark">Add New Teacher</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

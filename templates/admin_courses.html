@@ -1,0 +1,118 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Courses
+{% endblock %}
+
+{% block main %}
+<script>
+    let sortColumn = 0;
+    let ascending = true;
+
+    function sortCourses(column) {
+        if (sortColumn === column) {
+            ascending = !ascending;
+        } else {
+            ascending = true;
+            sortColumn = column;
+        }
+
+        const table = document.querySelector('table');
+        const rows = Array.from(table.querySelectorAll('tbody tr'));
+
+        rows.sort((a, b) => {
+            const aValue = a.querySelector(`td:nth-child(${column})`).textContent;
+            const bValue = b.querySelector(`td:nth-child(${column})`).textContent;
+            return ascending ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+        });
+
+        table.querySelector('tbody').innerHTML = '';
+        rows.forEach(row => {
+            table.querySelector('tbody').appendChild(row);
+        });
+
+        // Update arrow buttons
+        resetArrowButtons();
+    }
+
+    function resetArrowButtons() {
+        const arrowButtons = document.querySelectorAll('.btn-sort');
+        arrowButtons.forEach(button => {
+            button.textContent = '↓';
+        });
+
+        if (ascending) {
+            const currentButton = document.querySelector(`th[onclick="sortCourses(${sortColumn})"] .btn-sort`);
+            currentButton.textContent = '↑';
+        }
+    }
+</script>
+
+<form action="/admin/courses" method="post">
+    <div class="row justify-content-around">
+        <div class="col-md-2">
+            <select class="form-select" id="detail" name="detail">
+                <option disabled selected>Select Detail</option>
+                <option value="course.name">Name</option>
+                <option value="course.level">Level</option>
+                <option value="teacher_name">Teacher Name</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <div class="input-group">
+                <input type="text" class="form-control" id="query" name="query" placeholder="Search by selected detail">
+                <button type="submit" class="btn btn-dark" id="search-button">Search</button>
+            </div>
+        </div>
+        <div class="col-md-5">
+            <a href="/admin/courses_add" class="btn btn-dark mt-0">Add New Course</a>
+        </div>
+    </div>
+</form>
+
+<table class="table table-dark table-striped mt-4">
+    <thead>
+        <tr>
+            <th scope="col" onclick="sortCourses(2)">Name <button class="btn btn-dark btn-sm btn-sort">↓</button></th>
+            <th scope="col" onclick="sortCourses(3)">Level <button class="btn btn-dark btn-sm btn-sort">↓</button></th>
+            <th scope="col" onclick="sortCourses(4)">Teacher<button class="btn btn-dark btn-sm btn-sort">↓</button></th>
+            <th scope="col" style="padding-bottom: 13px;">Schedule</th>
+            <th scope="col" style="padding-bottom: 13px;">Student Count</th>
+            <th scope="col" style="padding-bottom: 13px;">Enrollments</th>
+            <th scope="col" style="padding-bottom: 13px;">Change details</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% set added_courses = [] %}
+        {% for course in courses %}
+            {% if course.course_id not in added_courses %}
+                <tr>
+                    <td>{{ course.name }}</td>
+                    <td>{{ course.level }}</td>
+                    <td>{{ course.teacher_name }}</td>
+                    <td>
+                        {% set added_schedules = [] %}
+                        {% for other_course in courses %}
+                            {% if course.course_id == other_course.course_id %}
+                                {% if other_course.dayofweek not in added_schedules %}
+                                    {{ other_course.dayofweek[:2] }} {{ other_course.start_time }}-{{ other_course.end_time }}
+                                    {% set _ = added_schedules.append(other_course.dayofweek) %}
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>{{ course.student_count }}</td>
+                    <td>
+                        <a href="/course/enrollments/{{ course.course_id }}" class="btn btn-light btn-sm">View</a>
+                    </td>
+                    <td>
+                        <a href="/admin/courses_edit/{{ course.course_id }}" class="btn btn-light btn-sm">Edit</a>
+                    </td>
+                </tr>
+                {% set _ = added_courses.append(course.course_id) %}
+            {% endif %}
+        {% endfor %}
+
+    </tbody>
+</table>
+{% endblock %}
