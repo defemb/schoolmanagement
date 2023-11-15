@@ -1,0 +1,15 @@
+.narrow-form {
+    width: 400px;
+    margin: 0 auto;
+}
+
+body {
+    background-image: url('/static/school.jpg');
+    background-size: cover; /* Adjust the image size to cover the entire background */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Prevent the image from repeating */
+}
+
+.navbar-brand img {
+    filter: brightness(0) invert(1);
+}
